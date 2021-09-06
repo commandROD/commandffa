@@ -1,0 +1,3 @@
+messages:
+  permission: '&cInsufficient permissions.'
+  config: '&aSuccessfully reloaded the configuration file!'

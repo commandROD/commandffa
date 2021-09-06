@@ -1,0 +1,22 @@
+name: CommandFFA
+version: ${project.version}
+main: me.commandrod.commandffa.Main
+api-version: 1.16
+authors: [ commandROD ]
+description: FFA Plugin (Mainly for events)
+commands:
+  admin:
+    description: Main admin command for the plugin.
+    usage: /admin [reloadconfig|countdown]
+  setborder:
+    description: Changes the border.
+    usage: /setborder <(String) seconds|distance|warning> <(Int) seconds|distance|warning>
+  setlobby:
+    description: Changes the lobby location.
+    usage: /setlobby
+  setcenter:
+    description: Changes the center location.
+    usage: /setcenter
+  start:
+    description: Starts the gamemode.
+    usage: /start
