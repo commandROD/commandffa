@@ -4,6 +4,7 @@ import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,6 @@ public class Admin implements CommandExecutor {
                 if (args.length >= 1){
                     switch (args[0]) {
                         case "reloadconfig":
-                            plugin().saveConfig();
                             plugin().reloadConfig();
                             sender.sendMessage(Utils.color(Messages.CONFIG));
                             break;
@@ -37,12 +37,14 @@ public class Admin implements CommandExecutor {
                             }
                             break;
                         case "forceend":
-                            Bukkit.getWorlds().forEach(world -> {
+                            for (World world : Bukkit.getWorlds()) {
                                 world.getWorldBorder().reset();
-                            });
+                            }
                             sender.sendMessage(Utils.color("&cForce ended the game."));
                             game.setGame(false);
+                            game.setPvP(false);
                             game.getAlivePlayers().clear();
+                            game.getDeathLocations().clear();
                             break;
                     }
                 } else {
