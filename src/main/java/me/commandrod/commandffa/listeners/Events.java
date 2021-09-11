@@ -3,7 +3,6 @@ package me.commandrod.commandffa.listeners;
 import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +10,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import static me.commandrod.commandffa.Main.plugin;
 
@@ -52,6 +52,22 @@ public class Events implements Listener {
                     }
                 }, 60);
             }
+        }
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent e){
+        Player p = e.getPlayer();
+        if (game.isGame()){
+            game.eliminate(p);
+        }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e){
+        Player p = e.getPlayer();
+        if (game.isGame()){
+            game.eliminate(p);
         }
     }
 

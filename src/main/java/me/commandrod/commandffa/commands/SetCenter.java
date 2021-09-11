@@ -12,18 +12,18 @@ public class SetCenter implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("setcenter")){
-            if (sender instanceof Player){
-                Player p = (Player) sender;
-                if (p.hasPermission("commandffa.setcenter")){
-                    Utils.setConfigLocation("center-location", p);
-                    p.sendMessage(Utils.color("&3Successfully updated the &bcenter &3location."));
-                } else {
-                    sender.sendMessage(Utils.color(Messages.PERMISSION));
-                    Utils.fail(sender);
-                }
-            } else {
+            if (!(sender instanceof Player)) {
                 sender.sendMessage(Utils.color("&a[CommandFFA] Only players may execute this command!"));
+                return true;
             }
+            Player p = (Player) sender;
+            if (!p.hasPermission("commandffa.setcenter")) {
+                sender.sendMessage(Utils.color(Messages.PERMISSION));
+                Utils.fail(sender);
+                return true;
+            }
+            Utils.setConfigLocation("center-location", p);
+            p.sendMessage(Utils.color("&3Successfully updated the &bcenter &3location."));
         }
         return true;
     }

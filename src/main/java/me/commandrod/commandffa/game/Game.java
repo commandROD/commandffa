@@ -59,15 +59,14 @@ public class Game {
     }
 
     public void revive(Player player){
+        this.getAlivePlayers().add(player.getUniqueId());
         player.setGameMode(GameMode.SURVIVAL);
         if (deathLocations.containsKey(player)){
-            player.teleport(deathLocations.get(player));
             deathLocations.remove(player);
         } else {
             player.teleport(Utils.getConfigLocation("center-location"));
         }
         heal(player, true);
-        this.getAlivePlayers().add(player.getUniqueId());
         giveKit(player);
     }
 
@@ -97,6 +96,7 @@ public class Game {
         }, 0 ,10);
         player.getWorld().getWorldBorder().reset();
         this.getAlivePlayers().clear();
+        this.getDeathLocations().clear();
     }
 
     public void heal(Player player, boolean clearInventory) {
