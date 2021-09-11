@@ -10,7 +10,7 @@ commands:
     usage: /admin [reloadconfig|countdown]
   setborder:
     description: Changes the border.
-    usage: /setborder <(String) seconds|distance|warning> <(Int) seconds|distance|warning>
+    usage: /setborder <(String) seconds|distance|warning> <(Integer) seconds|distance|warning>
   setlobby:
     description: Changes the lobby location.
     usage: /setlobby
@@ -20,3 +20,6 @@ commands:
   start:
     description: Starts the gamemode.
     usage: /start
+  revive:
+    description: Revives a player.
+    usage: /revive [player]

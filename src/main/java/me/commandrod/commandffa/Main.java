@@ -19,6 +19,7 @@ public final class Main extends JavaPlugin {
         this.getCommand("setlobby").setExecutor(new SetLobby());
         this.getCommand("setcenter").setExecutor(new SetCenter());
         this.getCommand("start").setExecutor(new Start());
+        this.getCommand("revive").setExecutor(new Revive());
         this.saveConfig();
     }
 
