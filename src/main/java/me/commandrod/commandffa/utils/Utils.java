@@ -24,19 +24,17 @@ public class Utils {
         plugin().getConfig().set(path + ".x", player.getLocation().getX());
         plugin().getConfig().set(path + ".y", player.getLocation().getY());
         plugin().getConfig().set(path + ".z", player.getLocation().getZ());
-        plugin().getConfig().set(path + ".pitch", player.getLocation().getPitch());
         plugin().getConfig().set(path + ".yaw", player.getLocation().getYaw());
+        plugin().getConfig().set(path + ".pitch", player.getLocation().getPitch());
         plugin().saveConfig();
         plugin().reloadConfig();
     }
     public static Location getConfigLocation(String path){
-        try {
-            Location loc = new Location(Bukkit.getWorld(plugin().getConfig().getString(path + ".world")), plugin().getConfig().getDouble(path + ".x"), plugin().getConfig().getDouble(path + ".y"), plugin().getConfig().getDouble(path + ".z"), (float) plugin().getConfig().getDouble(path + ".pitch"), (float) plugin().getConfig().getDouble(path + ".yaw"));
-            return loc;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Bukkit.getLogger().info("An error occured trying to get " + path + ". Is the line empty?");
-        }
-        return null;
+        Location loc = new Location(Bukkit.getWorld(plugin().getConfig().getString(path + ".world")), plugin().getConfig().getDouble(path + ".x"), plugin().getConfig().getDouble(path + ".y"), plugin().getConfig().getDouble(path + ".z"), (float) plugin().getConfig().getDouble(path + ".yaw"), (float) plugin().getConfig().getDouble(path + ".pitch"));
+        return loc;
+    }
+
+    public static String getConfigString(String path) {
+        return plugin().getConfig().getString(path);
     }
 }

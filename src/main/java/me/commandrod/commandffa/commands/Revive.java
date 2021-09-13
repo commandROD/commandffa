@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 
 public class Revive implements CommandExecutor {
 
-    Game game = new Game();
+    Game game = Start.game;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("start")){
+        if (cmd.getName().equalsIgnoreCase("revive")){
                 if (!sender.hasPermission("commandffa.revive")){
-                    sender.sendMessage(Utils.color(Messages.PERMISSION));
+                    sender.sendMessage(Utils.color(Utils.getConfigString("messages.permission")));
                     Utils.fail(sender);
                     return true;
                 }

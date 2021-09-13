@@ -18,7 +18,7 @@ public class SetCenter implements CommandExecutor {
             }
             Player p = (Player) sender;
             if (!p.hasPermission("commandffa.setcenter")) {
-                sender.sendMessage(Utils.color(Messages.PERMISSION));
+                sender.sendMessage(Utils.color(Utils.getConfigString("messages.permission")));
                 Utils.fail(sender);
                 return true;
             }

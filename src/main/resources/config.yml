@@ -1,3 +1,27 @@
 messages:
   permission: '&cInsufficient permissions.'
-  config: '&aSuccessfully reloaded the configuration file!'
+  config: '&aSuccessfully reloaded the configuration file.'
+lobby-location:
+  world: world
+  x: 0.5
+  y: 64.0
+  z: 0.5
+  pitch: 0.0
+  yaw: -90.0
+center-location:
+  world: world
+  x: 50.5
+  y: 64.0
+  z: 50.5
+  pitch: 0.0
+  yaw: -90.0
+border:
+  seconds: 180
+  distance: 100
+  warning: 1
+settings:
+  countdown: 5
+  servername: '&3&lExample'
+  serverip: '&eexample.com'
+  kills: '&bKills: &3%kills%'
+  remaining-players: '&bRemaining Players: &3%remaining-players%'

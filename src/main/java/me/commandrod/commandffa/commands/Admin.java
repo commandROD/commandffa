@@ -4,25 +4,24 @@ import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 import static me.commandrod.commandffa.Main.plugin;
 
 public class Admin implements CommandExecutor {
 
-    Game game = new Game();
+    Game game = Start.game;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if (cmd.getName().equalsIgnoreCase("admin")){
-            if (sender.hasPermission("commandffa.admin")){
-                sender.sendMessage(Utils.color(Messages.PERMISSION));
+            if (!sender.hasPermission("commandffa.admin")){
+                sender.sendMessage(Utils.color(Utils.getConfigString("messages.permission")));
                 Utils.fail(sender);
                 return true;
             }
@@ -30,7 +29,7 @@ public class Admin implements CommandExecutor {
                 switch (args[0]) {
                     case "reloadconfig":
                         plugin().reloadConfig();
-                        sender.sendMessage(Utils.color(Messages.CONFIG));
+                        sender.sendMessage(Utils.color(Utils.getConfigString("messages.config")));
                         break;
                     case "countdown":
                         if (args.length >= 2) {
@@ -49,14 +48,16 @@ public class Admin implements CommandExecutor {
                         for (World world : Bukkit.getWorlds()) {
                             world.getWorldBorder().reset();
                         }
-                        for (UUID uuid : game.getAlivePlayers()){
-                            Player player = Bukkit.getPlayer(uuid);
-                            player.teleport(Utils.getConfigLocation("lobby-location"));
+                        for (Player players : Bukkit.getOnlinePlayers()){
+                            players.getInventory().clear();
+                            players.setGameMode(GameMode.SURVIVAL);
+                            players.teleport(Utils.getConfigLocation("lobby-location"));
                         }
                         game.setGame(false);
                         game.setPvP(false);
                         game.getAlivePlayers().clear();
                         game.getDeathLocations().clear();
+                        game.getKills().clear();
                         sender.sendMessage(Utils.color("&cForce ended the game."));
                         break;
                 }
