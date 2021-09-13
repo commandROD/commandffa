@@ -1,6 +1,5 @@
 package me.commandrod.commandffa.commands;
 
-import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

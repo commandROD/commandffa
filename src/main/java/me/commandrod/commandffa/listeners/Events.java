@@ -65,7 +65,7 @@ public class Events implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        if (game.isGame() && game.getAlivePlayers().contains(p)){
+        if (game.isGame() && game.getAlivePlayers().contains(p.getUniqueId())){
             game.eliminate(p);
             p.setGameMode(GameMode.SPECTATOR);
         }
@@ -74,7 +74,7 @@ public class Events implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        if (game.isGame() && game.getAlivePlayers().contains(p)){
+        if (game.isGame() && game.getAlivePlayers().contains(p.getUniqueId())){
             game.eliminate(p);
             p.setGameMode(GameMode.SPECTATOR);
         }
