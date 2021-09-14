@@ -1,7 +1,7 @@
 package me.commandrod.commandffa.commands;
 
+import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
-import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class Revive implements CommandExecutor {
 
-    Game game = Start.game;
+    Game game = Main.getGame();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

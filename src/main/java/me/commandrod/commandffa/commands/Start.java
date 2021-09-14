@@ -1,5 +1,6 @@
 package me.commandrod.commandffa.commands;
 
+import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.scoreboardmanager.ScoreboardManager;
 import me.commandrod.commandffa.utils.Messages;
@@ -17,7 +18,7 @@ import static me.commandrod.commandffa.Main.plugin;
 
 public class Start implements CommandExecutor {
 
-    public static Game game = new Game();
+    Game game = Main.getGame();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

@@ -1,6 +1,6 @@
 package me.commandrod.commandffa.listeners;
 
-import me.commandrod.commandffa.commands.Start;
+import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ import static me.commandrod.commandffa.Main.plugin;
 
 public class Events implements Listener {
 
-    Game game = Start.game;
+    Game game = Main.getGame();
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
@@ -74,7 +74,7 @@ public class Events implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        if (game.isGame() && game.getAlivePlayers().contains(p.getUniqueId())){
+        if (game.isGame()){
             game.eliminate(p);
             p.setGameMode(GameMode.SPECTATOR);
         }

@@ -1,6 +1,7 @@
 package me.commandrod.commandffa;
 
 import me.commandrod.commandffa.commands.*;
+import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.listeners.Events;
 import me.commandrod.commandffa.tabcomplete.TabComplete;
 import org.bukkit.Bukkit;
@@ -9,11 +10,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Main extends JavaPlugin {
 
     private static Main instance;
+    private static Game game;
+    public static Game getGame() { return game; }
     public static Main plugin() { return instance; }
 
     @Override
     public void onEnable() {
         instance = this;
+        game = new Game();
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         this.getCommand("admin").setExecutor(new Admin());
         this.getCommand("admin").setTabCompleter(new TabComplete());

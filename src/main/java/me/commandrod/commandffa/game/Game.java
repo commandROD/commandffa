@@ -1,5 +1,6 @@
 package me.commandrod.commandffa.game;
 
+import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.commands.Start;
 import me.commandrod.commandffa.scoreboardmanager.ScoreboardManager;
 import me.commandrod.commandffa.utils.Utils;
@@ -40,7 +41,7 @@ public class Game {
                         setPvP(true);
                         players.sendTitle(Utils.color("&3Good luck!"), Utils.color("&bTry to be the last one standing!"), 5, 60, 5);
                         Bukkit.getScheduler().cancelTasks(plugin());
-                        ScoreboardManager.scoreboardRunnable(Start.game);
+                        ScoreboardManager.scoreboardRunnable(Main.getGame());
                     }
                 }
             }
