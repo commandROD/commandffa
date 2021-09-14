@@ -1,7 +1,6 @@
 package me.commandrod.commandffa.game;
 
 import me.commandrod.commandffa.Main;
-import me.commandrod.commandffa.commands.Start;
 import me.commandrod.commandffa.scoreboardmanager.ScoreboardManager;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
@@ -13,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static me.commandrod.commandffa.Main.plugin;
 
@@ -55,23 +51,24 @@ public class Game {
     }
 
     public void revive(Player player){
-        this.getAlivePlayers().add(player.getUniqueId());
-        player.setGameMode(GameMode.SURVIVAL);
-        if (deathLocations.containsKey(player)){
-            player.teleport(deathLocations.get(player));
-            deathLocations.remove(player);
-        } else {
-            player.teleport(Utils.getConfigLocation("center-location"));
+        if (!this.getAlivePlayers().contains(player.getUniqueId())){
+            this.getAlivePlayers().add(player.getUniqueId());
+            player.setGameMode(GameMode.SURVIVAL);
+            if (deathLocations.containsKey(player)){
+                player.teleport(deathLocations.get(player));
+                deathLocations.remove(player);
+            } else {
+                player.teleport(Utils.getConfigLocation("center-location"));
+            }
+            heal(player, true);
+            giveKit(player);
         }
-        heal(player, true);
-        giveKit(player);
     }
 
     public void stopGame(Player player){
         setGame(false);
         setPvP(false);
-        for (UUID uuid : this.getAlivePlayers()){
-            Player players = Bukkit.getPlayer(uuid);
+        for (Player players : Bukkit.getOnlinePlayers()){
             players.sendTitle(Utils.color("&3" + player.getName() + " won the game!"), Utils.color("&bGG!"), 5, 80 ,5);
             heal(players, true);
         }
@@ -119,9 +116,7 @@ public class Game {
     public void setGame(boolean game) {
         this.game = game;
     }
-    public List<UUID> getAlivePlayers() {
-        return this.alivePlayers;
-    }
+    public List<UUID> getAlivePlayers() { return this.alivePlayers; }
     public HashMap<Player, Location> getDeathLocations() { return this.deathLocations; }
     public boolean isPvP() {
         return PvP;
@@ -132,9 +127,7 @@ public class Game {
     public HashMap<Player, Integer> getKills() {
         return kills;
     }
-    public Integer getPlayerKills(Player player) {
-        return kills.get(player);
-    }
+    public int getPlayerKills(Player player) { return kills.get(player); }
     public void setPlayerKills(Player player, int newKills) {
         kills.replace(player, newKills);
     }

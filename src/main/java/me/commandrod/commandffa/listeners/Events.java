@@ -49,7 +49,7 @@ public class Events implements Listener {
             Player killer = e.getEntity().getKiller();
             game.getDeathLocations().put(p, p.getLocation());
             game.eliminate(p);
-            game.setPlayerKills(killer, game.getPlayerKills(killer) + 1);
+            if (killer != null) game.setPlayerKills(killer, game.getPlayerKills(killer) + 1);
             e.getDrops().clear();
             if (game.getAlivePlayers().size() == 1){
                 Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {

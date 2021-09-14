@@ -19,7 +19,7 @@ public class ScoreboardManager {
         obj.setDisplayName(Utils.color(Utils.getConfigString("settings.servername")));
         Score blank = obj.getScore(Utils.color("&c "));
         Score alivePlayersScore = obj.getScore(Utils.color(Utils.getConfigString("settings.remaining-players").replace("%remaining-players%", String.valueOf(game.getAlivePlayers().size()))));
-        Score killScore = obj.getScore(Utils.color(Utils.getConfigString("settings.kills").replace("%kills%", game.getPlayerKills(player).toString())));
+        Score killScore = obj.getScore(Utils.color(Utils.getConfigString("settings.kills").replace("%kills%", game.getKills().get(player).toString())));
         Score blank1 = obj.getScore(Utils.color("&3 "));
         Score ip = obj.getScore(Utils.color(Utils.getConfigString("settings.serverip")));
         blank.setScore(5);
