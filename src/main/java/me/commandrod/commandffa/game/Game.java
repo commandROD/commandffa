@@ -18,11 +18,11 @@ import static me.commandrod.commandffa.Main.plugin;
 
 public class Game {
 
-    private boolean game;
+    private GameState gameState = GameState.PRE_GAME;
     private boolean PvP;
-    private List<UUID> alivePlayers = new ArrayList<>();
-    private HashMap<Player, Location> deathLocations = new HashMap<>();
-    private HashMap<Player, Integer> kills = new HashMap<>();
+    private final List<UUID> alivePlayers = new ArrayList<>();
+    private final HashMap<Player, Location> deathLocations = new HashMap<>();
+    private final HashMap<Player, Integer> kills = new HashMap<>();
 
     public void countdown(int seconds) {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin(), new Runnable() {
@@ -37,7 +37,7 @@ public class Game {
                         setPvP(true);
                         players.sendTitle(Utils.color("&3Good luck!"), Utils.color("&bTry to be the last one standing!"), 5, 60, 5);
                         Bukkit.getScheduler().cancelTasks(plugin());
-                        ScoreboardManager.scoreboardRunnable(Main.getGame());
+                        if (Utils.getConfigBoolean("settings.scoreboard")) ScoreboardManager.scoreboardRunnable(Main.getGame());
                     }
                 }
             }
@@ -46,27 +46,25 @@ public class Game {
 
     public void eliminate(Player player){
         this.getAlivePlayers().remove(player.getUniqueId());
-        Bukkit.broadcastMessage(Utils.color("&c" + player.getName() + " has been eliminated."));
+        Bukkit.broadcastMessage(Utils.color(Utils.getConfigString("messages.elimination").replace("%player%", player.getName())));
         deathLocations.put(player, player.getLocation());
     }
 
     public void revive(Player player){
-        if (!this.getAlivePlayers().contains(player.getUniqueId())){
-            this.getAlivePlayers().add(player.getUniqueId());
-            player.setGameMode(GameMode.SURVIVAL);
-            if (deathLocations.containsKey(player)){
-                player.teleport(deathLocations.get(player));
-                deathLocations.remove(player);
-            } else {
-                player.teleport(Utils.getConfigLocation("center-location"));
-            }
-            heal(player, true);
-            giveKit(player);
+        this.getAlivePlayers().add(player.getUniqueId());
+        player.setGameMode(GameMode.SURVIVAL);
+        if (deathLocations.containsKey(player)){
+            player.teleport(deathLocations.get(player));
+            deathLocations.remove(player);
+        } else {
+            player.teleport(Utils.getConfigLocation("center-location"));
         }
+        heal(player, true);
+        giveKit(player);
     }
 
     public void stopGame(Player player){
-        setGame(false);
+        setGameState(GameState.ENDING);
         setPvP(false);
         for (Player players : Bukkit.getOnlinePlayers()){
             players.sendTitle(Utils.color("&3" + player.getName() + " won the game!"), Utils.color("&bGG!"), 5, 80 ,5);
@@ -84,15 +82,16 @@ public class Game {
                         players.setGameMode(GameMode.SURVIVAL);
                         players.teleport(Utils.getConfigLocation("lobby-location"));
                     }
+                    setGameState(GameState.PRE_GAME);
+                    getAlivePlayers().clear();
+                    getKills().clear();
+                    getDeathLocations().clear();
                     Bukkit.getScheduler().cancelTasks(plugin());
                 }
                 fireworkCount--;
             }
         }, 0 ,10);
         player.getWorld().getWorldBorder().reset();
-        this.getAlivePlayers().clear();
-        this.getDeathLocations().clear();
-        this.getKills().clear();
     }
 
     public void heal(Player player, boolean clearInventory) {
@@ -110,12 +109,8 @@ public class Game {
         player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
     }
 
-    public boolean isGame() {
-        return this.game;
-    }
-    public void setGame(boolean game) {
-        this.game = game;
-    }
+    public GameState getGameState() { return gameState; }
+    public void setGameState(GameState gameState) { this.gameState = gameState; }
     public List<UUID> getAlivePlayers() { return this.alivePlayers; }
     public HashMap<Player, Location> getDeathLocations() { return this.deathLocations; }
     public boolean isPvP() {
@@ -124,9 +119,7 @@ public class Game {
     public void setPvP(boolean pvP) {
         PvP = pvP;
     }
-    public HashMap<Player, Integer> getKills() {
-        return kills;
-    }
+    public HashMap<Player, Integer> getKills() { return kills; }
     public int getPlayerKills(Player player) { return kills.get(player); }
     public void setPlayerKills(Player player, int newKills) {
         kills.replace(player, newKills);

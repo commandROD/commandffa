@@ -1,7 +1,7 @@
 package me.commandrod.commandffa.scoreboardmanager;
 
-import me.commandrod.commandffa.commands.Start;
 import me.commandrod.commandffa.game.Game;
+import me.commandrod.commandffa.game.GameState;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public class ScoreboardManager {
         obj.setDisplayName(Utils.color(Utils.getConfigString("settings.servername")));
         Score blank = obj.getScore(Utils.color("&c "));
         Score alivePlayersScore = obj.getScore(Utils.color(Utils.getConfigString("settings.remaining-players").replace("%remaining-players%", String.valueOf(game.getAlivePlayers().size()))));
-        Score killScore = obj.getScore(Utils.color(Utils.getConfigString("settings.kills").replace("%kills%", game.getKills().get(player).toString())));
+        Score killScore = obj.getScore(Utils.color(Utils.getConfigString("settings.kills").replaceAll("%kills%", String.valueOf(game.getKills().get(player)))));
         Score blank1 = obj.getScore(Utils.color("&3 "));
         Score ip = obj.getScore(Utils.color(Utils.getConfigString("settings.serverip")));
         blank.setScore(5);
@@ -34,7 +34,7 @@ public class ScoreboardManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (game.isGame()){
+                if (game.getGameState().equals(GameState.STARTING) || game.getGameState().equals(GameState.GAME)){
                     for (Player players : Bukkit.getOnlinePlayers()){
                         newScoreboard(game, players);
                     }

@@ -2,13 +2,11 @@ package me.commandrod.commandffa.commands;
 
 import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
+import me.commandrod.commandffa.game.GameState;
 import me.commandrod.commandffa.scoreboardmanager.ScoreboardManager;
 import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,14 +23,25 @@ public class Start implements CommandExecutor {
         if (cmd.getName().equalsIgnoreCase("start")){
             if (sender instanceof Player){
                 Player p = (Player) sender;
-                game.getKills().clear();
-                game.getAlivePlayers().clear();
-                game.getDeathLocations().clear();
                 if (!p.hasPermission("commandffa.start")){
                     sender.sendMessage(Utils.color(Utils.getConfigString("messages.permission")));
                     Utils.fail(sender);
                     return true;
                 }
+                if (Utils.isGame(game)){
+                    sender.sendMessage(Utils.color("&cThere is currently a game running!"));
+                    Utils.fail(sender);
+                    return true;
+                }
+                if (Bukkit.getOnlinePlayers().size() <= 1){
+                    sender.sendMessage(Utils.color("&cThere are not enough players online!"));
+                    Utils.fail(sender);
+                    return true;
+                }
+                game.getKills().clear();
+                game.getAlivePlayers().clear();
+                game.getDeathLocations().clear();
+                p.getWorld().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                 Location centerLoc = Utils.getConfigLocation("center-location");
                 double size = plugin().getConfig().getDouble("border.distance");
                 long seconds = plugin().getConfig().getLong("border.seconds");
@@ -50,7 +59,7 @@ public class Start implements CommandExecutor {
                     players.setGameMode(GameMode.SURVIVAL);
                     players.teleport(centerLoc);
                 }
-                game.setGame(true);
+                game.setGameState(GameState.GAME);
                 game.countdown(plugin().getConfig().getInt("settings.countdown"));
             } else {
                 sender.sendMessage(Utils.color("&a[CommandFFA] Only players may execute this command!"));

@@ -4,6 +4,7 @@ ___
 
 ### How to install
 Get the latest version in the releases.
+**Make sure to copy the default config in case there are any config changes.**
 ___
 
 ### Plugin commands:

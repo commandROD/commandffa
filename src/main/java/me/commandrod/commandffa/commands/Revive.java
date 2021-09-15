@@ -2,6 +2,7 @@ package me.commandrod.commandffa.commands;
 
 import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
+import me.commandrod.commandffa.game.GameState;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -21,8 +22,9 @@ public class Revive implements CommandExecutor {
                     Utils.fail(sender);
                     return true;
                 }
-                if (!game.isGame()){
-                    sender.sendMessage(Utils.color("&cThere is are no games running!"));
+                if (!game.getGameState().equals(GameState.GAME)){
+                    sender.sendMessage(Utils.color("&cThere are no games running!"));
+                    Utils.fail(sender);
                     return true;
                 }
                 if (args.length == 0){
@@ -31,12 +33,22 @@ public class Revive implements CommandExecutor {
                         return true;
                     }
                     Player p = (Player) sender;
+                    if (game.getAlivePlayers().contains(p.getUniqueId())) {
+                        sender.sendMessage(Utils.color("&c" + p.getName() + " is already alive!"));
+                        Utils.fail(sender);
+                        return true;
+                    }
                     game.revive(p);
                     p.sendMessage(Utils.color("&3You have been revived."));
                 } else if (args.length >= 1){
                     Player t = Bukkit.getPlayer(args[0]);
                     if (t == null){
                         sender.sendMessage(Utils.color("&c" + args[0] + " is not a valid player!"));
+                        return true;
+                    }
+                    if (game.getAlivePlayers().contains(t.getUniqueId())) {
+                        sender.sendMessage(Utils.color("&c" + t.getName() + " is already alive!"));
+                        Utils.fail(sender);
                         return true;
                     }
                     game.revive(t);

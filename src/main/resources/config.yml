@@ -1,6 +1,7 @@
 messages:
   permission: '&cInsufficient permissions.'
   config: '&aSuccessfully reloaded the configuration file.'
+  elimination: '&c%player% has been eliminated.'
 lobby-location:
   world: world
   x: 0.5
@@ -25,3 +26,5 @@ settings:
   serverip: '&eexample.com'
   kills: '&bKills: &3%kills%'
   remaining-players: '&bRemaining Players: &3%remaining-players%'
+  scoreboard: true
+  sound: true

@@ -2,6 +2,7 @@ package me.commandrod.commandffa.commands;
 
 import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
+import me.commandrod.commandffa.game.GameState;
 import me.commandrod.commandffa.utils.Messages;
 import me.commandrod.commandffa.utils.Utils;
 import org.bukkit.Bukkit;
@@ -54,7 +55,7 @@ public class Admin implements CommandExecutor {
                             players.setGameMode(GameMode.SURVIVAL);
                             players.teleport(Utils.getConfigLocation("lobby-location"));
                         }
-                        game.setGame(false);
+                        game.setGameState(GameState.PRE_GAME);
                         game.setPvP(false);
                         game.getAlivePlayers().clear();
                         game.getDeathLocations().clear();
