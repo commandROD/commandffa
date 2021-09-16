@@ -113,9 +113,7 @@ public class Game {
     public void setGameState(GameState gameState) { this.gameState = gameState; }
     public List<UUID> getAlivePlayers() { return this.alivePlayers; }
     public HashMap<Player, Location> getDeathLocations() { return this.deathLocations; }
-    public boolean isPvP() {
-        return PvP;
-    }
+    public boolean isPvP() { return PvP; }
     public void setPvP(boolean pvP) {
         PvP = pvP;
     }

@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -81,18 +82,30 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        if (game.getGameState().equals(GameState.GAME)){
-            p.setGameMode(GameMode.SPECTATOR);
+        if (game.getGameState().equals(GameState.GAME) || game.getGameState().equals(GameState.ENDING)){
+            p.getInventory().clear();
             p.sendTitle(Utils.color("&cYou died!"), "", 5, 40 ,5);
-            p.teleport(Utils.getConfigLocation("center-location"));
+            // I actually despise this code and I'm sorry for putting it in. I had to because of essentials / other plugins that teleport you upon respawn.
+            Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
+                @Override
+                public void run() {
+                    p.teleport(Utils.getConfigLocation("center-location"));
+                }
+            }, 1);
+            Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
+                @Override
+                public void run() {
+                    p.setGameMode(GameMode.SPECTATOR);
+                }
+            }, 1);
         }
     }
 
     @EventHandler
     public void onPunch(EntityDamageByEntityEvent e){
-        if (!game.isPvP() && e.getEntityType().equals(EntityType.PLAYER)) e.setCancelled(true);
+        if (!game.getGameState().equals(GameState.PRE_GAME) && !game.isPvP() && e.getEntityType().equals(EntityType.PLAYER)) e.setCancelled(true);
     }
 }
