@@ -19,8 +19,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import static me.commandrod.commandffa.Main.plugin;
-
 public class Events implements Listener {
 
     Game game = Main.getGame();
@@ -28,7 +26,7 @@ public class Events implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
-        if (Utils.isGame(game) && !p.hasPermission("commandffa.admin")){
+        if (Utils.isGame(game) && !p.hasPermission("commandffa.admin") && !game.getAlivePlayers().contains(p.getUniqueId())){
             p.sendMessage(Utils.color("&cBlock interactions are disabled!"));
             e.setCancelled(true);
         }
@@ -37,7 +35,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         Player p = e.getPlayer();
-        if (Utils.isGame(game) && !p.hasPermission("commandffa.admin")){
+        if (Utils.isGame(game) && !p.hasPermission("commandffa.admin") && !game.getAlivePlayers().contains(p.getUniqueId())){
             p.sendMessage(Utils.color("&cBlock interactions are disabled!"));
             e.setCancelled(true);
         }
@@ -49,11 +47,13 @@ public class Events implements Listener {
             e.setDeathMessage("");
             Player p = e.getEntity();
             Player killer = e.getEntity().getKiller();
-            game.getDeathLocations().put(p, p.getLocation());
+            if (killer != null){
+                game.setPlayerKills(killer, game.getPlayerKills(killer) + 1);
+                game.getDeathLocations().put(p, p.getLocation());
+            }
             game.eliminate(p);
-            if (killer != null) game.setPlayerKills(killer, game.getPlayerKills(killer) + 1);
             e.getDrops().clear();
-            Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     if (game.getAlivePlayers().size() == 1){
@@ -67,19 +67,15 @@ public class Events implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        if (game.getGameState().equals(GameState.GAME) && game.getAlivePlayers().contains(p.getUniqueId())){
-            game.eliminate(p);
-            p.setGameMode(GameMode.SPECTATOR);
-        }
+        if (!Utils.isGame(game)) return;
+        game.eliminate(p);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e){
         Player p = e.getPlayer();
-        if (game.getGameState().equals(GameState.GAME)){
-            game.eliminate(p);
-            p.setGameMode(GameMode.SPECTATOR);
-        }
+        if (!Utils.isGame(game)) return;
+        game.eliminate(p);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -89,13 +85,13 @@ public class Events implements Listener {
             p.getInventory().clear();
             p.sendTitle(Utils.color("&cYou died!"), "", 5, 40 ,5);
             // I actually despise this code and I'm sorry for putting it in. I had to because of essentials / other plugins that teleport you upon respawn.
-            Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     p.teleport(Utils.getConfigLocation("center-location"));
                 }
             }, 1);
-            Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     p.setGameMode(GameMode.SPECTATOR);

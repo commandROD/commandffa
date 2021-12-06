@@ -1,5 +1,7 @@
 package me.commandrod.commandffa.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.scoreboardmanager.ScoreboardManager;
 import me.commandrod.commandffa.utils.Utils;
@@ -14,8 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-import static me.commandrod.commandffa.Main.plugin;
-
+@Getter @Setter
 public class Game {
 
     private GameState gameState = GameState.PRE_GAME;
@@ -25,20 +26,17 @@ public class Game {
     private final HashMap<Player, Integer> kills = new HashMap<>();
 
     public void countdown(int seconds) {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), () -> {
             int countdown = seconds + 1;
-            @Override
-            public void run() {
-                if (countdown >= -1) countdown--;
-                for (UUID uuid : getAlivePlayers()) {
-                    Player players = Bukkit.getPlayer(uuid);
-                    if (countdown > 0) players.sendTitle(Utils.color("&3Match starts in " + countdown), Utils.color("&bGood luck!"), 5, 20, 5);
-                    if (countdown == 0){
-                        setPvP(true);
-                        players.sendTitle(Utils.color("&3Good luck!"), Utils.color("&bTry to be the last one standing!"), 5, 60, 5);
-                        Bukkit.getScheduler().cancelTasks(plugin());
-                        if (Utils.getConfigBoolean("settings.scoreboard")) ScoreboardManager.scoreboardRunnable(Main.getGame());
-                    }
+            if (countdown >= -1) countdown--;
+            for (UUID uuid : getAlivePlayers()) {
+                Player players = Bukkit.getPlayer(uuid);
+                if (countdown > 0) players.sendTitle(Utils.color("&3Match starts in " + countdown), Utils.color("&bGood luck!"), 5, 20, 5);
+                if (countdown == 0){
+                    setPvP(true);
+                    players.sendTitle(Utils.color("&3Good luck!"), Utils.color("&bTry to be the last one standing!"), 5, 60, 5);
+                    Bukkit.getScheduler().cancelTasks(Main.getInstance());
+                    if (Utils.getConfigBoolean("settings.scoreboard")) ScoreboardManager.scoreboardRunnable(Main.getGame());
                 }
             }
         }, 0, 20);
@@ -46,8 +44,10 @@ public class Game {
 
     public void eliminate(Player player){
         this.getAlivePlayers().remove(player.getUniqueId());
+        player.getInventory().clear();
+        player.sendTitle(Utils.color("&cYou died!"), "", 5, 40 ,5);
+        player.setGameMode(GameMode.SPECTATOR);
         Bukkit.broadcastMessage(Utils.color(Utils.getConfigString("messages.elimination").replace("%player%", player.getName())));
-        deathLocations.put(player, player.getLocation());
     }
 
     public void revive(Player player){
@@ -70,7 +70,7 @@ public class Game {
             players.sendTitle(Utils.color("&3" + player.getName() + " won the game!"), Utils.color("&bGG!"), 5, 80 ,5);
             heal(players, true);
         }
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin(), new Runnable() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
             int fireworkCount = 21;
             @Override
             public void run() {
@@ -86,7 +86,7 @@ public class Game {
                     getAlivePlayers().clear();
                     getKills().clear();
                     getDeathLocations().clear();
-                    Bukkit.getScheduler().cancelTasks(plugin());
+                    Bukkit.getScheduler().cancelTasks(Main.getInstance());
                 }
                 fireworkCount--;
             }
@@ -109,17 +109,9 @@ public class Game {
         player.getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
     }
 
-    public GameState getGameState() { return gameState; }
-    public void setGameState(GameState gameState) { this.gameState = gameState; }
-    public List<UUID> getAlivePlayers() { return this.alivePlayers; }
-    public HashMap<Player, Location> getDeathLocations() { return this.deathLocations; }
-    public boolean isPvP() { return PvP; }
-    public void setPvP(boolean pvP) {
-        PvP = pvP;
-    }
-    public HashMap<Player, Integer> getKills() { return kills; }
-    public int getPlayerKills(Player player) { return kills.get(player); }
     public void setPlayerKills(Player player, int newKills) {
         kills.replace(player, newKills);
     }
+
+    public int getPlayerKills(Player player) { return kills.get(player); }
 }

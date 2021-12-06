@@ -10,7 +10,7 @@ commands:
     usage: /admin [reloadconfig|countdown]
   setborder:
     description: Changes the border.
-    usage: /setborder <(String) seconds|distance|warning> <(Integer) seconds|distance|warning>
+    usage: /setborder <seconds|distance|warning> <number>
   setlobby:
     description: Changes the lobby location.
     usage: /setlobby

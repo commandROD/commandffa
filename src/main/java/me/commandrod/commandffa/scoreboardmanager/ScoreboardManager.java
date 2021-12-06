@@ -1,5 +1,6 @@
 package me.commandrod.commandffa.scoreboardmanager;
 
+import me.commandrod.commandffa.Main;
 import me.commandrod.commandffa.game.Game;
 import me.commandrod.commandffa.game.GameState;
 import me.commandrod.commandffa.utils.Utils;
@@ -9,8 +10,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-
-import static me.commandrod.commandffa.Main.plugin;
 
 public class ScoreboardManager {
     public static void newScoreboard(Game game, Player player){
@@ -31,20 +30,17 @@ public class ScoreboardManager {
         player.setScoreboard(scoreboard);
     }
     public static void scoreboardRunnable(Game game){
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (game.getGameState().equals(GameState.STARTING) || game.getGameState().equals(GameState.GAME)){
-                    for (Player players : Bukkit.getOnlinePlayers()){
-                        newScoreboard(game, players);
-                    }
-                } else {
-                    for (Player players : Bukkit.getOnlinePlayers()){
-                        players.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-                    }
+        Runnable runnable = () -> {
+            if (game.getGameState().equals(GameState.STARTING) || game.getGameState().equals(GameState.GAME)) {
+                for (Player players : Bukkit.getOnlinePlayers()) {
+                    newScoreboard(game, players);
+                }
+            } else {
+                for (Player players : Bukkit.getOnlinePlayers()){
+                    players.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
                 }
             }
         };
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin(), runnable, 0, 20);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), runnable, 0, 20);
     }
 }
